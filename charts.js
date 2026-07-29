@@ -36,10 +36,11 @@ const METRICS = {
   },
 };
 
-const GROUP_LIMIT = { day: 5, week: 12, month: 12 };
+const GROUP_LIMIT = { day: 5, week: 4, month: 3 };
 
 let currentMetric = "weight";
 let currentPeriod = "day";
+let currentOffset = 0;
 let chartInstance = null;
 
 function pad2(n) {
@@ -93,9 +94,8 @@ function aggregate(records, period, fields) {
   }
 
   const sortedKeys = Array.from(groups.keys()).sort();
-  const limited = sortedKeys.slice(-GROUP_LIMIT[period]);
 
-  return limited.map((key) => {
+  return sortedKeys.map((key) => {
     const g = groups.get(key);
     const values = {};
     for (const f of fields) {
@@ -105,29 +105,50 @@ function aggregate(records, period, fields) {
   });
 }
 
+function paginate(allGroups, period, offset) {
+  const pageSize = GROUP_LIMIT[period];
+  const end = Math.max(allGroups.length - offset * pageSize, 0);
+  const start = Math.max(end - pageSize, 0);
+  return {
+    page: allGroups.slice(start, end),
+    hasOlder: start > 0,
+    hasNewer: offset > 0,
+  };
+}
+
 function renderChart() {
   const canvas = document.getElementById("chart-canvas");
   const emptyMsg = document.getElementById("chart-empty");
+  const prevBtn = document.getElementById("chart-prev");
+  const nextBtn = document.getElementById("chart-next");
+  const rangeLabel = document.getElementById("chart-range-label");
   const records = loadRecords().slice().sort((a, b) => (a.date > b.date ? 1 : -1));
 
   const metric = METRICS[currentMetric];
   const fields = metric.series.map((s) => s.field);
-  const grouped = aggregate(records, currentPeriod, fields);
+  const allGrouped = aggregate(records, currentPeriod, fields);
+  const { page: grouped, hasOlder, hasNewer } = paginate(allGrouped, currentPeriod, currentOffset);
   const hasData = grouped.some((g) => fields.some((f) => g.values[f] !== null));
+
+  prevBtn.disabled = !hasOlder;
+  nextBtn.disabled = !hasNewer;
 
   if (chartInstance) {
     chartInstance.destroy();
     chartInstance = null;
   }
 
-  if (!hasData) {
+  if (grouped.length === 0 || !hasData) {
     canvas.hidden = true;
     emptyMsg.hidden = false;
+    rangeLabel.textContent = "";
     return;
   }
 
   canvas.hidden = false;
   emptyMsg.hidden = true;
+  rangeLabel.textContent =
+    grouped.length > 1 ? `${grouped[0].label} 〜 ${grouped[grouped.length - 1].label}` : grouped[0].label;
 
   const labels = grouped.map((g) => g.label);
   const datasets = metric.series.map((s) => ({
@@ -174,6 +195,7 @@ function setActive(buttons, activeBtn) {
 document.querySelectorAll("#metric-tabs .selector-btn").forEach((btn) => {
   btn.addEventListener("click", () => {
     currentMetric = btn.dataset.metric;
+    currentOffset = 0;
     setActive(document.querySelectorAll("#metric-tabs .selector-btn"), btn);
     renderChart();
   });
@@ -182,9 +204,20 @@ document.querySelectorAll("#metric-tabs .selector-btn").forEach((btn) => {
 document.querySelectorAll("#period-tabs .selector-btn").forEach((btn) => {
   btn.addEventListener("click", () => {
     currentPeriod = btn.dataset.period;
+    currentOffset = 0;
     setActive(document.querySelectorAll("#period-tabs .selector-btn"), btn);
     renderChart();
   });
+});
+
+document.getElementById("chart-prev").addEventListener("click", () => {
+  currentOffset += 1;
+  renderChart();
+});
+
+document.getElementById("chart-next").addEventListener("click", () => {
+  currentOffset = Math.max(currentOffset - 1, 0);
+  renderChart();
 });
 
 document.querySelectorAll("#main-tabs .tab-btn").forEach((btn) => {
