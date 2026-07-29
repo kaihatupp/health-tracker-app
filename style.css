@@ -168,6 +168,13 @@ input:focus {
 #records-section h2 {
   font-size: 1rem;
   color: #444;
+  margin-bottom: 4px;
+}
+
+#records-section .hint {
+  font-size: 0.8rem;
+  color: #888;
+  margin: 0 0 12px;
 }
 
 #records-list {
@@ -184,6 +191,14 @@ input:focus {
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
   font-size: 0.9rem;
   line-height: 1.6;
+}
+
+#records-list li[data-date] {
+  cursor: pointer;
+}
+
+#records-list li[data-date]:active {
+  background: #eef5f1;
 }
 
 #records-list .record-date {

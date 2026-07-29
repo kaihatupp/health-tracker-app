@@ -3,20 +3,20 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>健康管理アプリ</title>
+<title>VitalTrend</title>
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#2f7d5e">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
-<meta name="apple-mobile-web-app-title" content="健康管理">
+<meta name="apple-mobile-web-app-title" content="VitalTrend">
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
 <link rel="icon" href="icons/icon-192.png">
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
 <header>
-  <h1>健康管理記録</h1>
+  <h1>VitalTrend</h1>
 </header>
 
 <nav id="main-tabs" class="tab-bar">
@@ -34,12 +34,12 @@
 
       <div class="field">
         <label for="weight">体重 (kg)</label>
-        <input type="number" id="weight" name="weight" inputmode="decimal" step="0.1" min="0" max="300" placeholder="例: 65.5">
+        <input type="text" id="weight" name="weight" inputmode="numeric" placeholder="655と入力→65.5">
       </div>
 
       <div class="field">
         <label for="bodyFat">体脂肪率 (%)</label>
-        <input type="number" id="bodyFat" name="bodyFat" inputmode="decimal" step="0.1" min="0" max="100" placeholder="例: 20.5">
+        <input type="text" id="bodyFat" name="bodyFat" inputmode="numeric" placeholder="205と入力→20.5">
       </div>
 
       <div class="field-row">
@@ -63,6 +63,7 @@
 
     <section id="records-section">
       <h2>記録一覧</h2>
+      <p class="hint">タップすると、その日の記録を編集できます</p>
       <ul id="records-list"></ul>
     </section>
   </section>

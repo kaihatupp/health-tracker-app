@@ -1,6 +1,6 @@
 {
-  "name": "健康管理記録",
-  "short_name": "健康管理",
+  "name": "VitalTrend",
+  "short_name": "VitalTrend",
   "description": "体重・体脂肪率・血圧・脈拍を記録して推移を確認するアプリ",
   "start_url": "./index.html",
   "scope": "./",
