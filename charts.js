@@ -36,7 +36,7 @@ const METRICS = {
   },
 };
 
-const GROUP_LIMIT = { day: 30, week: 12, month: 12 };
+const GROUP_LIMIT = { day: 5, week: 12, month: 12 };
 
 let currentMetric = "weight";
 let currentPeriod = "day";
