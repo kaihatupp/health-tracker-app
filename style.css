@@ -212,6 +212,22 @@ input:focus {
   box-shadow: none;
 }
 
+#records-toggle {
+  width: 100%;
+  padding: 10px;
+  font-size: 0.9rem;
+  font-weight: bold;
+  color: #2f7d5e;
+  background: #fff;
+  border: 1px solid #2f7d5e;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+#records-toggle:active {
+  background: #eef5f1;
+}
+
 #backup-section {
   margin-top: 24px;
 }

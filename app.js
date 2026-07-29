@@ -3,6 +3,10 @@ const STORAGE_KEY = "healthRecords";
 const form = document.getElementById("record-form");
 const dateInput = document.getElementById("date");
 const recordsList = document.getElementById("records-list");
+const recordsToggle = document.getElementById("records-toggle");
+
+const RECORDS_PAGE_SIZE = 14;
+let recordsExpanded = false;
 
 function todayString() {
   const now = new Date();
@@ -57,10 +61,13 @@ function renderRecords() {
     li.className = "empty";
     li.textContent = "記録がまだありません";
     recordsList.appendChild(li);
+    recordsToggle.hidden = true;
     return;
   }
 
-  for (const r of records) {
+  const visible = recordsExpanded ? records : records.slice(0, RECORDS_PAGE_SIZE);
+
+  for (const r of visible) {
     const li = document.createElement("li");
     li.dataset.date = r.date;
     li.innerHTML = `
@@ -70,7 +77,19 @@ function renderRecords() {
     `;
     recordsList.appendChild(li);
   }
+
+  if (records.length > RECORDS_PAGE_SIZE) {
+    recordsToggle.hidden = false;
+    recordsToggle.textContent = recordsExpanded ? "閉じる" : `もっと見る(全${records.length}件)`;
+  } else {
+    recordsToggle.hidden = true;
+  }
 }
+
+recordsToggle.addEventListener("click", () => {
+  recordsExpanded = !recordsExpanded;
+  renderRecords();
+});
 
 function getNumberOrNull(id) {
   const value = document.getElementById(id).value;
