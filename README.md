@@ -1,0 +1,44 @@
+# 健康管理記録
+
+体重・体脂肪率・血圧(最高/最低)・脈拍を毎日記録し、推移をグラフで確認できる個人利用向けのPWA(Progressive Web App)です。
+
+公開URL: https://kaihatupp.github.io/health-tracker-app/
+
+## 機能
+
+- 体重・体脂肪率・最高血圧・最低血圧・脈拍の入力と保存
+- 日ごと・週ごと・月ごとの切り替えによる折れ線グラフ表示
+- 体重・体脂肪率・血圧・脈拍を個別に確認できるグラフに加え、体重と血圧をまとめて確認できるグラフ
+- ホーム画面に追加してアプリのように起動可能(PWA)
+- 完全オフライン動作(データはブラウザのlocalStorageにのみ保存され、サーバーへの送信は一切行いません)
+
+## 技術構成
+
+- HTML / CSS / 素のJavaScript(フレームワーク不使用)
+- グラフ描画: [Chart.js](https://www.chartjs.org/)(CDNではなく `lib/chart.umd.min.js` としてファイル同梱、オフライン動作)
+- データ保存: ブラウザの `localStorage`(サーバー・データベース不使用)
+- PWA対応: `manifest.json` + Service Worker(`sw.js`)によるオフラインキャッシュ
+
+## ファイル構成
+
+```
+index.html          画面構成(記録タブ・グラフタブ)
+style.css            スタイル
+app.js                入力フォーム・保存処理
+charts.js             グラフ描画処理
+manifest.json         PWA設定(アプリ名・アイコン・スクリーンショット)
+sw.js                 Service Worker(オフラインキャッシュ)
+pwa.js                Service Worker登録処理
+lib/chart.umd.min.js  Chart.js本体(同梱)
+icons/                ホーム画面用アイコン各種
+screenshots/          インストール画面用スクリーンショット
+generate-icons.ps1    アイコン生成用スクリプト(参考・再生成用)
+```
+
+## 更新方法
+
+1. コードを修正
+2. `sw.js` の `CACHE_NAME` のバージョンを更新(古いキャッシュを確実に破棄するため)
+3. `git add` → `git commit` → `git push`
+4. push後、GitHub Pagesが自動的に再公開(1分程度)
+5. スマホ側は、インストール済みのアプリを完全に閉じてから開き直すと最新版が反映されます(反映まで開き直しが2回必要な場合があります)
