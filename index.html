@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>健康管理アプリ</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#2f7d5e">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="健康管理">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header>
+  <h1>健康管理記録</h1>
+</header>
+
+<nav id="main-tabs" class="tab-bar">
+  <button type="button" class="tab-btn active" data-view="input">記録</button>
+  <button type="button" class="tab-btn" data-view="graph">グラフ</button>
+</nav>
+
+<main>
+  <section id="view-input" class="view active">
+    <form id="record-form">
+      <div class="field">
+        <label for="date">日付</label>
+        <input type="date" id="date" name="date" required>
+      </div>
+
+      <div class="field">
+        <label for="weight">体重 (kg)</label>
+        <input type="number" id="weight" name="weight" inputmode="decimal" step="0.1" min="0" max="300" placeholder="例: 65.5">
+      </div>
+
+      <div class="field">
+        <label for="bodyFat">体脂肪率 (%)</label>
+        <input type="number" id="bodyFat" name="bodyFat" inputmode="decimal" step="0.1" min="0" max="100" placeholder="例: 20.5">
+      </div>
+
+      <div class="field-row">
+        <div class="field">
+          <label for="systolic">最高血圧 (mmHg)</label>
+          <input type="number" id="systolic" name="systolic" inputmode="numeric" step="1" min="0" max="300" placeholder="例: 120">
+        </div>
+        <div class="field">
+          <label for="diastolic">最低血圧 (mmHg)</label>
+          <input type="number" id="diastolic" name="diastolic" inputmode="numeric" step="1" min="0" max="200" placeholder="例: 80">
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="pulse">脈拍 (回/分)</label>
+        <input type="number" id="pulse" name="pulse" inputmode="numeric" step="1" min="0" max="300" placeholder="例: 70">
+      </div>
+
+      <button type="submit" id="save-btn">保存する</button>
+    </form>
+
+    <section id="records-section">
+      <h2>記録一覧</h2>
+      <ul id="records-list"></ul>
+    </section>
+  </section>
+
+  <section id="view-graph" class="view">
+    <div class="selector-row" id="metric-tabs">
+      <button type="button" class="selector-btn active" data-metric="weight">体重</button>
+      <button type="button" class="selector-btn" data-metric="bodyFat">体脂肪率</button>
+      <button type="button" class="selector-btn" data-metric="bloodPressure">血圧</button>
+      <button type="button" class="selector-btn" data-metric="pulse">脈拍</button>
+      <button type="button" class="selector-btn" data-metric="weightBP">体重+血圧</button>
+    </div>
+
+    <div class="selector-row" id="period-tabs">
+      <button type="button" class="selector-btn active" data-period="day">日ごと</button>
+      <button type="button" class="selector-btn" data-period="week">週ごと</button>
+      <button type="button" class="selector-btn" data-period="month">月ごと</button>
+    </div>
+
+    <div class="chart-wrap">
+      <canvas id="chart-canvas"></canvas>
+    </div>
+    <p id="chart-empty" class="empty" hidden>表示できる記録がありません</p>
+  </section>
+</main>
+
+<script src="lib/chart.umd.min.js"></script>
+<script src="app.js"></script>
+<script src="charts.js"></script>
+<script src="pwa.js"></script>
+</body>
+</html>
