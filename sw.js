@@ -1,4 +1,4 @@
-const CACHE_NAME = "health-app-cache-v7";
+const CACHE_NAME = "health-app-cache-v8";
 const PRECACHE_FILES = [
   "./",
   "index.html",
@@ -19,7 +19,13 @@ const PRECACHE_FILES = [
 
 self.addEventListener("install", (event) => {
   event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => cache.addAll(PRECACHE_FILES))
+    caches.open(CACHE_NAME).then((cache) =>
+      Promise.all(
+        PRECACHE_FILES.map((url) =>
+          fetch(url, { cache: "reload" }).then((response) => cache.put(url, response))
+        )
+      )
+    )
   );
   self.skipWaiting();
 });
