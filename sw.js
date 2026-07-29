@@ -1,10 +1,11 @@
-const CACHE_NAME = "health-app-cache-v3";
+const CACHE_NAME = "health-app-cache-v4";
 const PRECACHE_FILES = [
   "./",
   "index.html",
   "style.css",
   "app.js",
   "charts.js",
+  "backup.js",
   "pwa.js",
   "manifest.json",
   "lib/chart.umd.min.js",

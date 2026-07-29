@@ -66,6 +66,16 @@
       <p class="hint">タップすると、その日の記録を編集できます</p>
       <ul id="records-list"></ul>
     </section>
+
+    <section id="backup-section">
+      <h2>バックアップ</h2>
+      <p class="hint">記録データをファイルとして保存・復元できます</p>
+      <div class="backup-buttons">
+        <button type="button" id="export-btn" class="secondary-btn">エクスポート(保存)</button>
+        <button type="button" id="import-btn" class="secondary-btn">インポート(復元)</button>
+      </div>
+      <input type="file" id="import-file" accept="application/json,.json" hidden>
+    </section>
   </section>
 
   <section id="view-graph" class="view">
@@ -93,6 +103,7 @@
 <script src="lib/chart.umd.min.js"></script>
 <script src="app.js"></script>
 <script src="charts.js"></script>
+<script src="backup.js"></script>
 <script src="pwa.js"></script>
 </body>
 </html>

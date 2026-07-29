@@ -211,3 +211,34 @@ input:focus {
   color: #888;
   box-shadow: none;
 }
+
+#backup-section {
+  margin-top: 24px;
+}
+
+#backup-section h2 {
+  font-size: 1rem;
+  color: #444;
+  margin-bottom: 4px;
+}
+
+.backup-buttons {
+  display: flex;
+  gap: 12px;
+}
+
+.secondary-btn {
+  flex: 1;
+  padding: 12px;
+  font-size: 0.95rem;
+  font-weight: bold;
+  color: #2f7d5e;
+  background: #fff;
+  border: 1px solid #2f7d5e;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.secondary-btn:active {
+  background: #eef5f1;
+}
