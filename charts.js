@@ -116,6 +116,55 @@ function paginate(allGroups, period, offset) {
   };
 }
 
+const SUMMARY_COUNT = 5;
+const PERIOD_UNIT_LABEL = { day: "日", week: "週", month: "ヶ月" };
+
+function formatSummaryValue(value, unit) {
+  return value === null || value === undefined ? "―" : `${value}${unit}`;
+}
+
+function renderSummary(allGrouped, metric, period) {
+  const summaryEl = document.getElementById("chart-summary");
+  const subset = allGrouped.slice(-SUMMARY_COUNT);
+  const hasData = subset.some((g) => metric.series.some((s) => g.values[s.field] !== null));
+
+  if (subset.length === 0 || !hasData) {
+    summaryEl.innerHTML = "";
+    return;
+  }
+
+  if (period === "day") {
+    const avgValues = metric.series.map((s) => {
+      const vals = subset.map((g) => g.values[s.field]).filter((v) => v !== null && v !== undefined);
+      const avg = vals.length ? Math.round((vals.reduce((a, b) => a + b, 0) / vals.length) * 10) / 10 : null;
+      return `<span>${s.label} ${formatSummaryValue(avg, s.unit)}</span>`;
+    });
+    summaryEl.innerHTML = `
+      <p class="summary-title">直近${subset.length}日間の平均</p>
+      <ul class="summary-list">
+        <li><span class="summary-label">平均値</span><span class="summary-values">${avgValues.join("")}</span></li>
+      </ul>
+    `;
+    return;
+  }
+
+  const unitLabel = PERIOD_UNIT_LABEL[period];
+  const items = subset
+    .slice()
+    .reverse()
+    .map((g) => {
+      const values = metric.series
+        .map((s) => `<span>${s.label} ${formatSummaryValue(g.values[s.field], s.unit)}</span>`)
+        .join("");
+      return `<li><span class="summary-label">${g.label}</span><span class="summary-values">${values}</span></li>`;
+    })
+    .join("");
+  summaryEl.innerHTML = `
+    <p class="summary-title">直近${subset.length}${unitLabel}分の平均値</p>
+    <ul class="summary-list">${items}</ul>
+  `;
+}
+
 function renderChart() {
   const canvas = document.getElementById("chart-canvas");
   const emptyMsg = document.getElementById("chart-empty");
@@ -129,6 +178,8 @@ function renderChart() {
   const allGrouped = aggregate(records, currentPeriod, fields);
   const { page: grouped, hasOlder, hasNewer } = paginate(allGrouped, currentPeriod, currentOffset);
   const hasData = grouped.some((g) => fields.some((f) => g.values[f] !== null));
+
+  renderSummary(allGrouped, metric, currentPeriod);
 
   prevBtn.disabled = !hasOlder;
   nextBtn.disabled = !hasNewer;

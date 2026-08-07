@@ -141,6 +141,59 @@ main {
   margin-top: 24px;
 }
 
+#chart-summary {
+  margin-top: 16px;
+  background: #fff;
+  border-radius: 12px;
+  padding: 12px 16px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+#chart-summary:empty {
+  display: none;
+}
+
+.summary-title {
+  font-size: 0.85rem;
+  font-weight: bold;
+  color: #444;
+  margin: 0 0 8px;
+}
+
+.summary-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.summary-list li {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 6px 0;
+  font-size: 0.9rem;
+  border-top: 1px solid #eee;
+}
+
+.summary-list li:first-child {
+  border-top: none;
+}
+
+.summary-list .summary-label {
+  color: #666;
+  flex: 0 0 auto;
+}
+
+.summary-list .summary-values {
+  text-align: right;
+  color: #222;
+}
+
+.summary-list .summary-values span {
+  display: inline-block;
+  margin-left: 8px;
+}
+
 form {
   background: #fff;
   border-radius: 12px;
