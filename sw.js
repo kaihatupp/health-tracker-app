@@ -1,4 +1,4 @@
-const CACHE_NAME = "health-app-cache-v9";
+const CACHE_NAME = "health-app-cache-v10";
 const PRECACHE_FILES = [
   "./",
   "index.html",

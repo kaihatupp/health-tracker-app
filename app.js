@@ -97,7 +97,9 @@ function getNumberOrNull(id) {
 }
 
 function setFieldValue(id, value) {
-  document.getElementById(id).value = value === null || value === undefined ? "" : String(value);
+  const el = document.getElementById(id);
+  el.value = value === null || value === undefined ? "" : String(value);
+  if (el._resetAutoDecimalBuffer) el._resetAutoDecimalBuffer();
 }
 
 function populateFormForDate(date) {
@@ -110,14 +112,48 @@ function populateFormForDate(date) {
 }
 
 function attachAutoDecimalInput(el) {
-  el.addEventListener("input", () => {
-    const digits = el.value.replace(/[^0-9]/g, "").slice(0, 4);
-    if (digits === "") {
-      el.value = "";
-      return;
+  let buffer = "";
+
+  function format() {
+    if (buffer === "") return "";
+    if (buffer.length <= 2) {
+      return `${parseInt(buffer, 10)}.0`;
     }
-    el.value = (parseInt(digits, 10) / 10).toFixed(1);
+    const intPart = buffer.slice(0, -1);
+    const decPart = buffer.slice(-1);
+    return `${parseInt(intPart, 10)}.${decPart}`;
+  }
+
+  el.addEventListener("focus", () => {
+    buffer = "";
   });
+
+  el.addEventListener("beforeinput", (e) => {
+    if (e.inputType === "insertText" && e.data && /^[0-9]+$/.test(e.data)) {
+      e.preventDefault();
+      buffer = (buffer + e.data).slice(0, 4);
+      el.value = format();
+    } else if (e.inputType === "deleteContentBackward" || e.inputType === "deleteContentForward") {
+      e.preventDefault();
+      buffer = buffer.slice(0, -1);
+      el.value = format();
+    } else if (e.inputType === "insertFromPaste") {
+      e.preventDefault();
+    } else {
+      e.preventDefault();
+    }
+  });
+
+  el.addEventListener("paste", (e) => {
+    e.preventDefault();
+    const text = (e.clipboardData || window.clipboardData).getData("text");
+    buffer = text.replace(/[^0-9]/g, "").slice(0, 4);
+    el.value = format();
+  });
+
+  el._resetAutoDecimalBuffer = () => {
+    buffer = "";
+  };
 }
 
 attachAutoDecimalInput(document.getElementById("weight"));
