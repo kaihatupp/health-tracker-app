@@ -273,6 +273,10 @@ document.getElementById("chart-next").addEventListener("click", () => {
 
 document.querySelectorAll("#main-tabs .tab-btn").forEach((btn) => {
   btn.addEventListener("click", () => {
+    const leavingInput = document.getElementById("view-input").classList.contains("active") && btn.dataset.view !== "input";
+    if (leavingInput && !confirmDiscardIfDirty()) return;
+    if (leavingInput) markFormClean();
+
     setActive(document.querySelectorAll("#main-tabs .tab-btn"), btn);
     document.querySelectorAll(".view").forEach((v) => v.classList.remove("active"));
     document.getElementById(`view-${btn.dataset.view}`).classList.add("active");

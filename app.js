@@ -109,6 +109,8 @@ function populateFormForDate(date) {
   setFieldValue("systolic", existing ? existing.systolic : "");
   setFieldValue("diastolic", existing ? existing.diastolic : "");
   setFieldValue("pulse", existing ? existing.pulse : "");
+  lastLoadedDate = date;
+  markFormClean();
 }
 
 function attachAutoDecimalInput(el) {
@@ -159,13 +161,54 @@ function attachAutoDecimalInput(el) {
 attachAutoDecimalInput(document.getElementById("weight"));
 attachAutoDecimalInput(document.getElementById("bodyFat"));
 
+// ---------- 保存し忘れ防止(離脱ガード) ----------
+//
+// 記録フォームを編集した後、保存せずに日付を変えたり別の記録をタップしたり
+// グラフタブへ移動したりすると入力内容が失われるため、離脱前に確認を挟む。
+
+let formIsDirty = false;
+let lastLoadedDate = dateInput.value;
+
+function markFormDirty() {
+  formIsDirty = true;
+}
+
+function markFormClean() {
+  formIsDirty = false;
+}
+
+function confirmDiscardIfDirty() {
+  if (!formIsDirty) return true;
+  return confirm("保存されていない変更があります。移動すると入力内容が失われますが、よろしいですか?");
+}
+
+form.addEventListener("input", (e) => {
+  if (e.target === dateInput) return;
+  markFormDirty();
+});
+form.addEventListener("change", (e) => {
+  if (e.target === dateInput) return;
+  markFormDirty();
+});
+
+window.addEventListener("beforeunload", (e) => {
+  if (!formIsDirty) return;
+  e.preventDefault();
+  e.returnValue = "";
+});
+
 dateInput.addEventListener("change", () => {
+  if (!confirmDiscardIfDirty()) {
+    dateInput.value = lastLoadedDate;
+    return;
+  }
   populateFormForDate(dateInput.value);
 });
 
 recordsList.addEventListener("click", (e) => {
   const li = e.target.closest("li[data-date]");
   if (!li) return;
+  if (!confirmDiscardIfDirty()) return;
   dateInput.value = li.dataset.date;
   populateFormForDate(li.dataset.date);
   form.scrollIntoView({ behavior: "smooth" });
